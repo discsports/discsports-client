@@ -7,8 +7,8 @@ COPY . .
 RUN npm run build
 
 #production stage
-FROM nginx:stable as production-stage
+FROM fholzer/nginx-brotli as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 COPY nginx_default.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]
