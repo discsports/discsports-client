@@ -17,7 +17,7 @@ import gStore from '@/services/gStore';
 import moment from '../../node_modules/moment';
 
 export default {
-  name: 'games',
+  name: 'Games',
   data() {
     return {
       gameData: {},

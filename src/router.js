@@ -23,8 +23,32 @@ export default new Router({
     },
     {
       path: '/games',
-      name: 'games',
-      component: () => import(/* webpackChunkName: "games" */ './views/Games.vue'),
+      name: 'Games',
+      component: () => import(/* webpackChunkName: "Games" */ './views/Games.vue'),
+    },
+    {
+      path: '/game/:gameId',
+      name: 'GameHistory',
+      component: () => import(/* webpackChunkName: "GameHistory" */ './views/GameHistory.vue'),
+      props: (route) => {
+        const gameId = Number.parseInt(route.params.gameId, 10);
+        if (Number.isNaN(gameId)) {
+          return 0;
+        }
+        return { gameId };
+      },
+    },
+    {
+      path: '/point/:pointId',
+      name: 'Point',
+      component: () => import(/* webpackChunkName: "Point" */ './views/Point.vue'),
+      props: (route) => {
+        const pointId = Number.parseFloat(route.params.pointId, 10);
+        if (Number.isNaN(pointId)) {
+          return 0;
+        }
+        return { pointId };
+      },
     },
   ],
 });
