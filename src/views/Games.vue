@@ -38,9 +38,14 @@ export default {
     async getGames() {
       try {
         const response = await gStore.fetchGames();
-        this.gameData = response.data.data.Event[0].games;
-        this.gameData.forEach((game) => { game.time = moment(game.time.split('[')[0]); });
-        this.gameData.sort((a, b) => a.time - b.time);
+        let { games } = response.data.data.Event[0];
+        games = games.map((_game) => {
+          const game = Object.assign({}, _game);
+          game.time = moment(game.time.split('[')[0]);
+          return game;
+        });
+        games.sort((a, b) => a.time - b.time);
+        this.gameData = games;
       } catch (e) {
         console.error(e);
       }

@@ -87,7 +87,6 @@ export default {
         team.playing.splice(i, 1);
         gStore.unEnrollPoint(this.pointId, pId);
       }
-      this.$forceUpdate();
     },
     backToGames(gameId) {
       this.$router.push({
@@ -103,8 +102,8 @@ export default {
         this.scored_by = response.data.data.Point[0].scored_by
           ? response.data.data.Point[0].scored_by : -1;
         this.gameData = response.data.data.Point[0].game;
-        this.gameData.teams[0].playing = [];
-        this.gameData.teams[1].playing = [];
+        this.$set(this.gameData.teams[0], 'playing', []);
+        this.$set(this.gameData.teams[1], 'playing', []);
         const players = response.data.data.Point[0].players.map(p => p.id);
         players.forEach((p) => {
           if (this.gameData.teams[0].roster.map(x => x.id).indexOf(p) >= 0) {
@@ -118,24 +117,8 @@ export default {
           if (p.scored_by) points.push(p);
         });
         this.gameData.points = points;
-        this.gameData.teams[0].roster.sort((a, b) => {
-          if (a.gender < b.gender) return -1;
-          if (a.gender > b.gender) return 1;
-          if (a.lastName < b.lastName) return -1;
-          if (a.lastName > b.lastName) return 1;
-          if (a.firstName < b.firstName) return -1;
-          if (a.firstName > b.firstName) return 1;
-          return 0;
-        });
-        this.gameData.teams[1].roster.sort((a, b) => {
-          if (a.gender < b.gender) return -1;
-          if (a.gender > b.gender) return 1;
-          if (a.lastName < b.lastName) return -1;
-          if (a.lastName > b.lastName) return 1;
-          if (a.firstName < b.firstName) return -1;
-          if (a.firstName > b.firstName) return 1;
-          return 0;
-        });
+        this.gameData.teams[0].roster.sort(this.playerSort);
+        this.gameData.teams[1].roster.sort(this.playerSort);
       } catch (e) {
         // console.error(e);
       }
@@ -162,6 +145,15 @@ export default {
       } catch (e) {
         // console.error(e);
       }
+    },
+    playerSort(a, b) {
+      if (a.gender < b.gender) return -1;
+      if (a.gender > b.gender) return 1;
+      if (a.lastName < b.lastName) return -1;
+      if (a.lastName > b.lastName) return 1;
+      if (a.firstName < b.firstName) return -1;
+      if (a.firstName > b.firstName) return 1;
+      return 0;
     },
   },
 };

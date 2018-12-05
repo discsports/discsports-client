@@ -157,6 +157,7 @@ export default {
                 id
                 firstName
                 lastName
+                gender
                 teams {
                   id
                 }

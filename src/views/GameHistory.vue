@@ -138,7 +138,8 @@ export default {
           ? response.data.data.Game[0].pullingId : -1;
         let { points } = response.data.data.Game[0];
         points.sort((a, b) => a.id - b.id);
-        points = points.map((point) => {
+        points = points.map((_point) => {
+          const point = Object.assign({}, _point);
           const t = {};
           this.teams.forEach((team) => {
             const playerArray = [];
@@ -146,8 +147,9 @@ export default {
               if (player.teams.map(pTeam => pTeam.id).indexOf(team.id) >= 0) {
                 playerArray.push(player);
               }
-              t[team.id] = playerArray;
             });
+            playerArray.sort(this.playerSort);
+            t[team.id] = playerArray;
           });
           point.players = t;
           return point;
@@ -163,6 +165,15 @@ export default {
       } catch (e) {
         // console.error(e);
       }
+    },
+    playerSort(a, b) {
+      if (a.gender < b.gender) return -1;
+      if (a.gender > b.gender) return 1;
+      if (a.lastName < b.lastName) return -1;
+      if (a.lastName > b.lastName) return 1;
+      if (a.firstName < b.firstName) return -1;
+      if (a.firstName > b.firstName) return 1;
+      return 0;
     },
   },
 };
