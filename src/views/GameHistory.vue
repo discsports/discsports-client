@@ -108,7 +108,7 @@ export default {
   watch: {
     pullingToStart() { this.updatePulling(this.gameId, this.pullingToStart); },
   },
-  mounted() {
+  created() {
     this.getGameHistory(this.gameId);
   },
   methods: {

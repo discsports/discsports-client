@@ -74,7 +74,7 @@ export default {
       scored_by: {},
     };
   },
-  mounted() {
+  created() {
     this.getRosters(this.pointId);
   },
   methods: {

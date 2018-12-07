@@ -23,7 +23,7 @@ export default {
       gameData: {},
     };
   },
-  mounted() {
+  created() {
     this.getGames();
   },
   methods: {
