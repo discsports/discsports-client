@@ -16,11 +16,12 @@
           <p class="d-flex justify-content-start align-items-center">
           <span v-if="point.scored_by" :style="{color: point.scored_by.color}">
             <span class="name">{{ point.scored_by.name }}</span>
-            {{ holds[index] ? 'Hold' : 'Break' }}
+            {{ holds[index-(1-lastPointScored)] ? 'Hold' : 'Break' }}
           </span>
           <span v-if="point.scored_by" class="badge badge-pill ml-auto"
-          :class="{'badge-primary': holds[index], 'badge-secondary': !holds[index]}">
-            <span v-for="(value, key, index) in score[index]" :key="key">
+          :class="{'badge-primary': holds[index-(1-lastPointScored)],
+                    'badge-secondary': !holds[index-(1-lastPointScored)]}">
+            <span v-for="(value, key, index) in score[index-(1-lastPointScored)]" :key="key">
               <span v-if="index === 0">{{ key }}&nbsp;</span>
               <span>{{ value }}</span>
               <span v-if="index === 0">&nbsp;-&nbsp;</span>
@@ -103,6 +104,10 @@ export default {
         s.unshift(Object.assign({}, acc));
       });
       return s;
+    },
+    lastPointScored: function lastPointScored() {
+      if (this.points[this.points.length - 1].scored_by) return 1;
+      return 0;
     },
   },
   watch: {
