@@ -1,4 +1,4 @@
-# ultimate
+# discsports-client
 
 ## Project setup
 ```
