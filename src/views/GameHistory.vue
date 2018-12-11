@@ -5,6 +5,12 @@
     <button type="button"
       class="btn btn-secondary btn-sm"
       @click="backToGames">Back to Games</button>
+    <vue-csv-downloader type="button"
+      class="btn btn-secondary btn-sm"
+      :data="csvData"
+      :fields="csvFields"
+    >Download CSV
+    </vue-csv-downloader>
     <div class="bs-component">
       <ul class="list-group">
         <li class="list-group-item"
@@ -56,9 +62,13 @@
 <script>
 import gStore from '@/services/gStore';
 import moment from '../../node_modules/moment';
+import VueCsvDownloader from 'vue-csv-downloader';
 
 export default {
   name: 'GameHistory',
+  components: {
+    VueCsvDownloader,
+  },
   props: {
     gameId: {
       type: Number,
@@ -108,6 +118,62 @@ export default {
     lastPointScored: function lastPointScored() {
       if (this.points[this.points.length - 1].scored_by) return 1;
       return 0;
+    },
+    csvData: function generateCsvData() {
+      let playerArray = [];
+      let teamArray = [];
+      const ptPlayers = [];
+      this.teams.forEach((team) => {
+        team.roster.map(p => playerArray.push(p));
+      });
+      this.points.forEach((pt) => {
+        const players = [];
+        Object.values(pt.players).forEach((pList) => {
+          pList.forEach((player) => {
+            players.push(player);
+          });
+        });
+        ptPlayers.push(players);
+      });
+      playerArray = playerArray.map((_p) => {
+        const p = Object.assign({}, _p);
+        ptPlayers.forEach((ptP, i) => {
+          const point = i + 1;
+          if (ptP.map(x => x.id).indexOf(p.id) >= 0) p[point] = 1;
+          else p[point] = '';
+          p.name = `${p.firstName} ${p.lastName}`;
+        });
+        return p;
+      });
+      teamArray = this.teams.map((_t) => {
+        const t = Object.assign({}, _t);
+        this.points.forEach((pt, i) => {
+          const point = i + 1;
+          if (pt.scored_by) {
+            if (pt.scored_by.id === t.id) t[point] = this.holds.slice().reverse()[i] ? 'H' : 'B';
+            else t[point] = '';
+          }
+        });
+        return t;
+      });
+      return playerArray.concat(teamArray);
+    },
+    csvFields: function generateCsvFields() {
+      const fields = [
+        {
+          label: 'Name',
+          value: 'name',
+        },
+      ];
+      this.points.forEach((pt, i) => {
+        const field = {
+          label: `Point ${i + 1}`,
+          value: `${i + 1}`,
+          default: '',
+        };
+        fields.push(field);
+      });
+      return fields;
     },
   },
   watch: {

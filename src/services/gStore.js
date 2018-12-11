@@ -144,6 +144,11 @@ export default {
             teams {
               id
               name
+              roster {
+                id
+                firstName
+                lastName
+              }
             }
             points {
               id
